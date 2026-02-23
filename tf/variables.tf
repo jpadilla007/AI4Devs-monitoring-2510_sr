@@ -69,7 +69,7 @@ variable "aws_account_id" {
 
   validation {
     condition     = can(regex("^\\d{12}$", var.aws_account_id))
-    error_message = "aws_account_id must be a 12-digit number."
+    error_message = "aws_account_id debe ser un número de 12 dígitos."
   }
 }
 
@@ -80,7 +80,7 @@ variable "datadog_external_id" {
 
   validation {
     condition     = length(var.datadog_external_id) > 0
-    error_message = "datadog_external_id must not be empty."
+    error_message = "datadog_external_id no debe estar vacío."
   }
 }
 

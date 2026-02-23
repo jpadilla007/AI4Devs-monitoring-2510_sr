@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-trap 'echo "[ERROR] Script failed at line $LINENO" >&2' ERR
+trap 'echo "[ERROR] El script falló en la línea $LINENO" >&2' ERR
 
 # ========================================
 # Script de Usuario para Frontend con Datadog
@@ -35,7 +35,7 @@ export DD_HOSTNAME
 export DD_TAGS="service:frontend,environment:${DD_ENV},version:1.0"
 
 # Descargar e instalar el agente Datadog
-bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)" || echo "[WARNING] Error en instalación del agente"
+bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)" || echo "[ADVERTENCIA] Error en instalación del agente"
 
 # Esperar a que el agente se instale correctamente
 sleep 10
@@ -47,7 +47,7 @@ systemctl start datadog-agent || true
 
 # Verificar estado del agente
 sleep 5
-systemctl status datadog-agent || echo "[WARNING] Estado del agente verificado"
+systemctl status datadog-agent || echo "[ADVERTENCIA] Estado del agente verificado"
 
 # ========================================
 # Configuración de la Aplicación Frontend
@@ -56,16 +56,16 @@ systemctl status datadog-agent || echo "[WARNING] Estado del agente verificado"
 echo "[$(date)] Descargando código del frontend desde S3..."
 
 # Descargar y descomprimir el código frontend
-aws s3 cp s3://lti-project-code-bucket/frontend.zip /home/ec2-user/frontend.zip || echo "[WARNING] No se pudo descargar frontend.zip"
+aws s3 cp s3://lti-project-code-bucket/frontend.zip /home/ec2-user/frontend.zip || echo "[ADVERTENCIA] No se pudo descargar frontend.zip"
 if [ -f /home/ec2-user/frontend.zip ]; then
-    unzip /home/ec2-user/frontend.zip -d /home/ec2-user/ || echo "[WARNING] Error descomprimiendo frontend.zip"
+    unzip /home/ec2-user/frontend.zip -d /home/ec2-user/ || echo "[ADVERTENCIA] Error descomprimiendo frontend.zip"
 fi
 
 # Construir la imagen Docker
 echo "[$(date)] Construyendo imagen Docker para Frontend..."
 if [ -d /home/ec2-user/frontend ]; then
     cd /home/ec2-user/frontend
-    docker build -t lti-frontend . || echo "[WARNING] Error construyendo imagen Docker"
+    docker build -t lti-frontend . || echo "[ADVERTENCIA] Error construyendo imagen Docker"
     
     # Ejecutar el contenedor con variables de entorno
     echo "[$(date)] Ejecutando contenedor Frontend..."
@@ -76,7 +76,7 @@ if [ -d /home/ec2-user/frontend ]; then
         -e DD_ENV="${DD_ENV}" \
         -e DD_SERVICE="frontend" \
         --name frontend-service \
-        lti-frontend || echo "[WARNING] Error iniciando contenedor"
+        lti-frontend || echo "[ADVERTENCIA] Error iniciando contenedor"
 fi
 
 echo "[$(date)] Configuración de Frontend completada"

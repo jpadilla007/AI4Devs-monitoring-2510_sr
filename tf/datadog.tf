@@ -62,7 +62,7 @@ resource "datadog_integration_aws_log_collection" "aws_logs" {
 # Dashboard Principal: Monitoreo de Infraestructura EC2
 resource "datadog_dashboard" "infrastructure_dashboard" {
   count        = var.enable_datadog_monitoring ? 1 : 0
-  title        = "${var.project_name} - Infrastructure Dashboard"
+  title        = "${var.project_name} - Dashboard de Infraestructura"
   description  = "Dashboard para monitorización de infraestructura AWS EC2, métricas de rendimiento y estado de instancias"
   layout_type  = "grid"
   is_read_only = false
@@ -76,7 +76,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "CPU Utilization (%)"
+      title       = "Utilización de CPU (%)"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -98,13 +98,13 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
 
       marker {
         display_type = "warning line"
-        label        = "Warning"
+        label        = "Advertencia"
         value        = "60"
       }
 
       marker {
         display_type = "error line"
-        label        = "Critical"
+        label        = "Crítico"
         value        = "80"
       }
     }
@@ -119,7 +119,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Network In (bytes/s)"
+      title       = "Tráfico de Red - Entrada (bytes/s)"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -149,7 +149,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Network Out (bytes/s)"
+      title       = "Tráfico de Red - Salida (bytes/s)"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -179,7 +179,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Disk Read Operations"
+      title       = "Operaciones de Disco"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -209,7 +209,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Disk Write Operations"
+      title       = "Operaciones de Escritura en Disco"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -239,7 +239,7 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Status Check Failed"
+      title       = "Check de Estado Fallido"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -342,7 +342,7 @@ resource "datadog_dashboard" "application_dashboard" {
     }
 
     timeseries_definition {
-      title       = "Frontend Instance CPU Usage"
+      title       = "Uso de CPU Frontend"
       title_size  = "16"
       title_align = "left"
       show_legend = true
@@ -374,7 +374,7 @@ resource "datadog_dashboard" "logs_dashboard" {
 
   widget {
     log_stream_definition {
-      title       = "Application Logs"
+      title       = "Logs de la Aplicación"
       title_size  = "16"
       title_align = "left"
       query       = "service:backend OR service:frontend"
@@ -394,7 +394,7 @@ resource "datadog_dashboard" "logs_dashboard" {
 # Monitor para CPU elevada en Backend
 resource "datadog_monitor" "high_cpu_backend" {
   count   = var.enable_datadog_monitoring ? 1 : 0
-  name    = "${var.project_name}: Backend - CPU usage is high"
+  name    = "${var.project_name}: Backend - El uso de CPU es muy alto"
   type    = "metric alert"
   message = "El uso de CPU en la instancia Backend es muy alto.\nInstancia: {{instance_id.name}}\nCPU actual: {{value}}%\n\n@oncall @slack-channel"
 
@@ -420,7 +420,7 @@ resource "datadog_monitor" "high_cpu_backend" {
 # Monitor para CPU elevada en Frontend
 resource "datadog_monitor" "high_cpu_frontend" {
   count   = var.enable_datadog_monitoring ? 1 : 0
-  name    = "${var.project_name}: Frontend - CPU usage is high"
+  name    = "${var.project_name}: Frontend - El uso de CPU es muy alto"
   type    = "metric alert"
   message = "El uso de CPU en la instancia Frontend es muy alto.\nInstancia: {{instance_id.name}}\nCPU actual: {{value}}%\n\n@oncall @slack-channel"
 
@@ -446,7 +446,7 @@ resource "datadog_monitor" "high_cpu_frontend" {
 # Monitor para Status Check Failed
 resource "datadog_monitor" "status_check_failed" {
   count   = var.enable_datadog_monitoring ? 1 : 0
-  name    = "${var.project_name}: EC2 Instance - Status check failed"
+  name    = "${var.project_name}: EC2 Instance - Verificación de estado falló"
   type    = "metric alert"
   message = "Status check ha fallado en la instancia: {{instance_id.name}}\n\n@oncall @slack-channel"
 
