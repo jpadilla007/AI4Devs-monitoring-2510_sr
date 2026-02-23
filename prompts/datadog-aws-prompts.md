@@ -1,7 +1,7 @@
 # 🔗 Datadog-AWS Prompts Utilizados
 
-**Fecha:** Febrero 2024  
-**Proyecto:** AI4Devs Monitoring  
+**Fecha:** Febrero 2026
+**Proyecto:** AI4Devs Monitoring
 **Objetivo:** Documentar los prompts utilizados para generar la integración Datadog-AWS en Terraform
 
 ---
@@ -485,6 +485,6 @@ Este archivo con 11 prompts documentados.
 
 ---
 
-**Versión:** 1.0  
-**Última actualización:** Febrero 2024  
+**Versión:** 1.0
+**Última actualización:** Febrero 2026
 **Estado:** ✅ Completado y Documentado

@@ -346,5 +346,5 @@ Para más información sobre:
 
 ---
 
-**Última actualización:** 2024
+**Última actualización:** 2026
 **Estado:** ✅ Completado y Documentado
