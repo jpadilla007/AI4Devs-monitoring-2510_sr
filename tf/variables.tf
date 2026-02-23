@@ -66,6 +66,22 @@ variable "aws_account_id" {
   description = "ID de la cuenta AWS"
   type        = string
   sensitive   = true
+
+  validation {
+    condition     = can(regex("^\\d{12}$", var.aws_account_id))
+    error_message = "aws_account_id must be a 12-digit number."
+  }
+}
+
+variable "datadog_external_id" {
+  description = "External ID de Datadog para la integración segura"
+  type        = string
+  sensitive   = true
+
+  validation {
+    condition     = length(var.datadog_external_id) > 0
+    error_message = "datadog_external_id must not be empty."
+  }
 }
 
 variable "enable_aws_integration" {

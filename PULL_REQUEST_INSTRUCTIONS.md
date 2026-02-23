@@ -55,7 +55,7 @@ git push -u origin datadog-aws-integration-jpadilla
 
 ### Opción 1: Desde GitHub Web
 
-1. Ir a: https://github.com/tu-usuario/AI4Devs-monitoring-2510_sr
+1. Ir a: https://github.com/jpadilla007/AI4Devs-monitoring-2510_sr
 2. Click en "Pull Requests"
 3. Click en "New Pull Request"
 4. Seleccionar:

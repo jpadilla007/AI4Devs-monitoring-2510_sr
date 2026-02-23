@@ -16,10 +16,7 @@ Se ha reorganizado la configuración de Terraform para seguir las mejores práct
 - **`outputs.tf`**: Salidas de configuración
 - **`datadog.tf`**: Recursos específicos de Datadog
 - **`ec2.tf`**: Configuración de instancias EC2 (mejorada)
-- **`security_groups.tf`**: Grupos de seguridad
-- **`iam.tf`**: Configuración IAM
-- **`dashboard.tf`**: Dashboards de Datadog
-- **`s3.tf`**: Almacenamiento S3
+- **`scripts/`**: Scripts de usuario para instalación de agentes
 
 #### 2. **Configuración del Proveedor Datadog**
 
@@ -113,7 +110,7 @@ Se configuraron tres monitores automáticos:
 1. **Eliminación de Credenciales Hardcodeadas**
    ```bash
    # ❌ ANTES (INSEGURO)
-   export DD_API_KEY='76cd5e07d41cec7b205a01ffbc26c5ae'
+   export DD_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
    
    # ✅ AHORA (SEGURO)
    export DD_API_KEY="${DD_API_KEY}"  # Variable de Terraform

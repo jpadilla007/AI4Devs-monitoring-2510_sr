@@ -31,15 +31,7 @@ resource "aws_iam_role" "datadog_integration_role" {
   }
 }
 
-# Crear una variable para el External ID de Datadog
-variable "datadog_external_id" {
-  description = "External ID de Datadog para la integración segura"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-# Attachar la política de Datadog al rol
+# Attchar la política de Datadog al rol
 resource "aws_iam_role_policy_attachment" "datadog_policy_attachment" {
   count      = var.enable_aws_integration ? 1 : 0
   role       = aws_iam_role.datadog_integration_role[0].name
@@ -57,8 +49,10 @@ resource "datadog_integration_aws" "aws_integration" {
 
 # Integración para Logs de AWS con Datadog
 resource "datadog_integration_aws_log_collection" "aws_logs" {
-  count   = var.enable_aws_integration ? 1 : 0
-  enabled = true
+  count      = var.enable_aws_integration ? 1 : 0
+  account_id = var.aws_account_id
+  services   = ["cloudwatch"]
+  enabled    = true
 }
 
 # ========================================
@@ -95,10 +89,6 @@ resource "datadog_dashboard" "infrastructure_dashboard" {
           line_width = "normal"
           palette    = "dog_classic"
         }
-      }
-
-      request {
-        query = "avg:aws.ec2.cpuutilization{*} by {instance_id}"
       }
 
       yaxis {
@@ -287,17 +277,12 @@ resource "datadog_dashboard" "application_dashboard" {
       y      = 0
     }
 
-    status_definition {
-      title       = "Backend Instance Status"
-      title_size  = "16"
-      title_align = "left"
-      show_label  = true
-
-      request {
-        q = "avg:aws.ec2.instance_state{aws_tag:name:lti-project-backend}"
-      }
-
-      color_preference = "background"
+    manage_status_definition {
+      query         = "type:monitor host:*"
+      summary_type  = "monitors"
+      title         = "Backend Instance Status"
+      title_align   = "left"
+      title_size    = "16"
     }
   }
 
@@ -309,17 +294,12 @@ resource "datadog_dashboard" "application_dashboard" {
       y      = 0
     }
 
-    status_definition {
-      title       = "Frontend Instance Status"
-      title_size  = "16"
-      title_align = "left"
-      show_label  = true
-
-      request {
-        q = "avg:aws.ec2.instance_state{aws_tag:name:lti-project-frontend}"
-      }
-
-      color_preference = "background"
+    manage_status_definition {
+      query         = "type:monitor host:*"
+      summary_type  = "monitors"
+      title         = "Frontend Instance Status"
+      title_align   = "left"
+      title_size    = "16"
     }
   }
 
@@ -425,6 +405,9 @@ resource "datadog_monitor" "high_cpu_backend" {
     warning  = 60
   }
 
+  notify_no_data    = true
+  no_data_timeframe = 10
+
   tags = [
     "environment:${var.environment}",
     "application:backend",
@@ -448,6 +431,9 @@ resource "datadog_monitor" "high_cpu_frontend" {
     warning  = 60
   }
 
+  notify_no_data    = true
+  no_data_timeframe = 10
+
   tags = [
     "environment:${var.environment}",
     "application:frontend",
@@ -469,6 +455,9 @@ resource "datadog_monitor" "status_check_failed" {
   thresholds {
     critical = 0
   }
+
+  notify_no_data    = true
+  no_data_timeframe = 15
 
   tags = [
     "environment:${var.environment}",

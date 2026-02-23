@@ -246,7 +246,7 @@ Actualiza los scripts de usuario EC2 para:
 - Mostrar timestamps en logs
 
 Cambios específicos:
-- De: export DD_API_KEY='76cd5e07d41cec7b205a01ffbc26c5ae'
+- De: export DD_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 - A: export DD_API_KEY="${DD_API_KEY}"
 
 Mantener:
@@ -312,7 +312,8 @@ Genera un README.md completo que incluya:
 - Explicación de cada mejora
 - Archivos modificados/creados
 - Instrucciones de despliegue paso a paso
-- Variables de entorno requeridasjemplos de configuración
+- Variables de entorno requeridas
+- Ejemplos de configuración
 - Dashboards y monitores
 - Solución de problemas
 - Mejoras de seguridad

@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -euo pipefail
+trap 'echo "[ERROR] Script failed at line $LINENO" >&2' ERR
 
 # ========================================
 # Script de Usuario para Frontend con Datadog
@@ -9,13 +10,13 @@ echo "[$(date)] Iniciando configuración de Frontend con Datadog..."
 
 # Actualizar el sistema
 echo "[$(date)] Actualizando sistema..."
-yum update -y
-yum install -y docker curl wget
+yum update -y || true
+yum install -y docker curl wget unzip jq || true
 
 # Habilitar e iniciar Docker
 echo "[$(date)] Iniciando Docker..."
-systemctl enable docker
-systemctl start docker
+systemctl enable docker || true
+systemctl start docker || true
 
 # ========================================
 # Instalación del Agente Datadog
@@ -29,19 +30,20 @@ export DD_API_KEY="${DD_API_KEY}"
 export DD_SITE="${DD_SITE}"
 export DD_ENV="${DD_ENV}"
 export DD_SERVICE="frontend"
-export DD_HOSTNAME="$(hostname)"
+DD_HOSTNAME="$(hostname)" || DD_HOSTNAME="unknown"
+export DD_HOSTNAME
 export DD_TAGS="service:frontend,environment:${DD_ENV},version:1.0"
 
 # Descargar e instalar el agente Datadog
-bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)" || echo "[WARNING] Error en instalación del agente"
 
 # Esperar a que el agente se instale correctamente
 sleep 10
 
 # Iniciar el agente Datadog
 echo "[$(date)] Iniciando servicio Datadog Agent..."
-systemctl enable datadog-agent
-systemctl start datadog-agent
+systemctl enable datadog-agent || true
+systemctl start datadog-agent || true
 
 # Verificar estado del agente
 sleep 5
@@ -56,14 +58,14 @@ echo "[$(date)] Descargando código del frontend desde S3..."
 # Descargar y descomprimir el código frontend
 aws s3 cp s3://lti-project-code-bucket/frontend.zip /home/ec2-user/frontend.zip || echo "[WARNING] No se pudo descargar frontend.zip"
 if [ -f /home/ec2-user/frontend.zip ]; then
-    unzip /home/ec2-user/frontend.zip -d /home/ec2-user/
+    unzip /home/ec2-user/frontend.zip -d /home/ec2-user/ || echo "[WARNING] Error descomprimiendo frontend.zip"
 fi
 
 # Construir la imagen Docker
 echo "[$(date)] Construyendo imagen Docker para Frontend..."
 if [ -d /home/ec2-user/frontend ]; then
     cd /home/ec2-user/frontend
-    docker build -t lti-frontend .
+    docker build -t lti-frontend . || echo "[WARNING] Error construyendo imagen Docker"
     
     # Ejecutar el contenedor con variables de entorno
     echo "[$(date)] Ejecutando contenedor Frontend..."
@@ -74,9 +76,7 @@ if [ -d /home/ec2-user/frontend ]; then
         -e DD_ENV="${DD_ENV}" \
         -e DD_SERVICE="frontend" \
         --name frontend-service \
-        lti-frontend
+        lti-frontend || echo "[WARNING] Error iniciando contenedor"
 fi
 
 echo "[$(date)] Configuración de Frontend completada"
-
-# Timestamp para forzar actualización

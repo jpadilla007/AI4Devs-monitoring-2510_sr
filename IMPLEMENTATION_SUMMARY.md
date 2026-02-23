@@ -75,7 +75,7 @@
 - Tráfico de red (entrada/salida)
 - Operaciones de disco
 - Status checks de EC2
-- 6 widgets con umbales de alerta
+- 6 widgets con umbrales de alerta
 
 [x] **Dashboard de Aplicación**
 - Estado de instancias Backend/Frontend
@@ -147,7 +147,7 @@ PULL_REQUEST_INSTRUCTIONS.md                 (Nueva guía de PR)
 
 **ANTES (❌ INSEGURO):**
 ```bash
-export DD_API_KEY='76cd5e07d41cec7b205a01ffbc26c5ae'
+export DD_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 ```
 
 **DESPUÉS (✅ SEGURO):**
@@ -182,16 +182,17 @@ metadata_options {
 }
 ```
 
-### 5. Permisos IAM Minimizados
+### 5. Permisos IAM Minimizados y Controlados
 
-- CloudWatch: read-only
-- EC2: describe operations
-- Logs: read-only + put subscription
-- No permisos de escritura/eliminación
+- CloudWatch: read-only (GetMetricData, GetMetricStatistics, ListMetrics)
+- EC2: describe operations only (Describe*)
+- CloudWatch Logs: read + managed write operations (CreateLogGroup, CreateLogStream, PutSubscriptionFilter, DeleteSubscriptionFilter - required for Datadog log collection)
+- Tag access: read-only (GetResources, GetTagKeys, GetTagValues)
+- Política: Least privilege with specific actions, no wildcards except for Describe*
 
 ---
 
-## 💡 Características Tecnicas Implementadas
+## 💡 Características Técnicas Implementadas
 
 ### Terraform Avanzado
 
